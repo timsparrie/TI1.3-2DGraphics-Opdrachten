@@ -1,30 +1,27 @@
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-
-import static javafx.application.Application.launch;
-
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-
-import javax.imageio.ImageIO;
-
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+
 public class MovingCharacter extends Application {
     private ResizableCanvas canvas;
+    int i = 32;
+    int xImage = 0;
+    private int k = 0;
+    private boolean clicked = false;
 
     @Override
     public void start(Stage stage) throws Exception
     {
-
+        HelloImage();
         BorderPane mainPane = new BorderPane();
         canvas = new ResizableCanvas(g -> draw(g), mainPane);
         mainPane.setCenter(canvas);
@@ -55,13 +52,48 @@ public class MovingCharacter extends Application {
         graphics.setTransform(new AffineTransform());
         graphics.setBackground(Color.white);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
+        graphics.drawImage(tiles[i], xImage,250, null);
+
+
+
+
     }
 
 
     public void update(double deltaTime)
     {
-    }
 
+        canvas.setOnMousePressed(e -> clicked = true);
+        canvas.setOnMouseReleased(e -> clicked = false);
+        if (!clicked) {
+            if (i >= 40)
+                i = 32;
+        } else {
+            i = 24;
+        }
+            k++;
+        if (k >= 10) {
+            i++;
+            k = 0;
+        }
+        xImage++;
+        if (xImage >= (int) canvas.getWidth())
+            xImage = 0;
+
+
+    }
+    private BufferedImage[] tiles;
+    public void HelloImage() {
+        try {
+            BufferedImage image = ImageIO.read(getClass().getResource("/images/sprite.png"));
+            tiles = new BufferedImage[65];
+            for(int i = 0; i < 65; i++)
+                tiles[i] = image.getSubimage(64 * (i%8), 64 * (i/8), 64, 64);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     public static void main(String[] args)
     {
         launch(MovingCharacter.class);
