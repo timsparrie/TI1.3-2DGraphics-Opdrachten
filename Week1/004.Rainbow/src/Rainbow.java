@@ -5,6 +5,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 
+import java.awt.*;
+
 public class Rainbow extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -17,6 +19,54 @@ public class Rainbow extends Application {
     
     
     public void draw(FXGraphics2D graphics) {
+        int graphX = 0;
+        int graphY=0;
+        int graphWidth = 1920;
+        graphics.setColor(Color.magenta);
+        graphics.fillArc(graphX,graphY,graphWidth,2160,0,180);
+
+        graphX += 50;
+        graphY += 50;
+        graphWidth -= 100;
+        graphics.setColor(Color.cyan);
+        graphics.fillArc(graphX,graphY,graphWidth,2160,0,180);
+
+        graphX += 50;
+        graphY += 50;
+        graphWidth -= 100;
+        graphics.setColor(Color.blue);
+        graphics.fillArc(graphX,graphY,graphWidth,2160,0,180);
+
+        graphX += 50;
+        graphY += 50;
+        graphWidth -= 100;
+        graphics.setColor(Color.green);
+        graphics.fillArc(graphX,graphY,graphWidth,2160,0,180);
+
+        graphX += 50;
+        graphY += 50;
+        graphWidth -= 100;
+        graphics.setColor(Color.YELLOW);
+        graphics.fillArc(graphX,graphY,graphWidth,2160,0,180);
+
+        graphX += 50;
+        graphY += 50;
+        graphWidth -= 100;
+        graphics.setColor(Color.orange);
+        graphics.fillArc(graphX,graphY,graphWidth,2160,0,180);
+
+        graphX += 50;
+        graphY += 50;
+        graphWidth -= 100;
+        graphics.setColor(Color.red);
+        graphics.fillArc(graphX,graphY,graphWidth,2160,0,180);
+
+        graphX += 50;
+        graphY += 50;
+        graphWidth -= 100;
+        graphics.setColor(Color.white);
+        graphics.fillArc(graphX,graphY,graphWidth,2160,0,180);
+
 
     }
     
