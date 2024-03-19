@@ -25,7 +25,12 @@ public class AngryBirds extends Application {
     private Camera camera;
     private boolean debugSelected = true;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
+    private double mouseX;
+    private double mouseY;
     private Body angryBlackBird;
+    private double oldMouseX;
+    private double oldMouseY;
+
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -73,19 +78,42 @@ public class AngryBirds extends Application {
         Body background = new Body();
         gameObjects.add(new GameObject("/images/background.png", background, new Vector2(0,-60), 1.1));
 
+        {
+            Body beam = new Body();
+            BodyFixture beamFixture = new BodyFixture(new Rectangle(20, 1));
+            beam.addFixture(beamFixture);
+            beam.getTransform().setTranslation(new Vector2(0, -4.7));
+            beam.setMass(MassType.INFINITE);
+            world.addBody(beam);
 
-        Body beam = new Body();
-        BodyFixture beamFixture = new BodyFixture(new Rectangle(20,1));
-        beam.addFixture(beamFixture);
-        beam.getTransform().setTranslation(new Vector2(0,-4.7));
-        beam.setMass(MassType.INFINITE);
-        world.addBody(beam);
+            Body roof = new Body();
+            BodyFixture roofFixture = new BodyFixture(new Rectangle(20, 1));
+            roof.addFixture(roofFixture);
+            roof.getTransform().setTranslation(new Vector2(0, 5.4));
+            roof.setMass(MassType.INFINITE);
+            world.addBody(roof);
+
+            Body right = new Body();
+            BodyFixture rightFixture = new BodyFixture(new Rectangle(1, 10));
+            right.addFixture(rightFixture);
+            right.getTransform().setTranslation(new Vector2(9.6,0));
+            right.setMass(MassType.INFINITE);
+            world.addBody(right);
+
+            Body left = new Body();
+            BodyFixture leftFixture = new BodyFixture(new Rectangle(1, 10));
+            left.addFixture(leftFixture);
+            left.getTransform().setTranslation(new Vector2(-9.6,0));
+            left.setMass(MassType.INFINITE);
+            world.addBody(left);
+
+        }
 
         Body catapult = new Body();
         BodyFixture catapultFixture = new BodyFixture(new Rectangle(0.3,1.1));
         catapult.setMass(MassType.INFINITE);
         catapult.addFixture(catapultFixture);
-        catapult.getTransform().setTranslation(new Vector2(-8,-3.7));
+        catapult.getTransform().setTranslation(new Vector2(-7.5,-3.7));
         world.addBody(catapult);
         gameObjects.add(new GameObject("/images/catapult.png", catapult, new Vector2(-50,-200),.25));
 
@@ -119,15 +147,8 @@ public class AngryBirds extends Application {
             gameObjects.add(new GameObject("/images/block.png", box3, new Vector2(0, 0), 0.5));
         }
 
-        angryBlackBird = new Body();
-        BodyFixture angryBlackBirdFixture = new BodyFixture(new Circle(0.3));
-        angryBlackBirdFixture.setRestitution(0.3);
-        angryBlackBirdFixture.setFriction(1);
-        angryBlackBird.addFixture(angryBlackBirdFixture);
-        angryBlackBird.getTransform().setTranslation(new Vector2(-8,-2.7));
-        angryBlackBird.setMass(MassType.NORMAL);
-        world.addBody(angryBlackBird);
-        gameObjects.add(new GameObject("/images/blackbird.png", angryBlackBird, new Vector2(0,-60), 0.18));
+        addBombBird(-7.5, -2.7);
+        addPig(1.1,-3);
 
 
         Body angryBlackestBird = new Body();
@@ -162,9 +183,7 @@ public class AngryBirds extends Application {
         graphics.setTransform(originalTransform);
     }
 
-    public void addBlock(MouseEvent e, double x, double y) {
-        if (!e.isControlDown())
-            return;
+    public void addBlock(double x, double y) {
         Body box = new Body();
         BodyFixture boxFixture = new BodyFixture(new Rectangle(0.5,0.5));
         boxFixture.setRestitution(0.1);
@@ -175,14 +194,70 @@ public class AngryBirds extends Application {
         gameObjects.add(new GameObject("/images/block.png", box, new Vector2(0,0), 0.5));
 
     }
-    public void update(double deltaTime) {
-        mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), 100);
 
-        canvas.setOnMousePressed(e -> addBlock(e, (e.getX()/100-9.6), (e.getY()/100-5.4)*-1));
-//        canvas.setOnKeyPressed(e -> );
+    private void addBombBird(double x, double y) {
+        angryBlackBird = new Body();
+        BodyFixture angryBlackBirdFixture = new BodyFixture(new Circle(0.3));
+        angryBlackBirdFixture.setRestitution(0.3);
+        angryBlackBirdFixture.setFriction(1);
+        angryBlackBird.addFixture(angryBlackBirdFixture);
+        angryBlackBird.getTransform().setTranslation(new Vector2(x,y));
+        angryBlackBird.setMass(MassType.INFINITE);
+        world.addBody(angryBlackBird);
+        gameObjects.add(new GameObject("/images/blackbird.png", angryBlackBird, new Vector2(0,-60), 0.18));
+
+    }
+
+    private void addPig(double x, double y) {
+        Body pig = new Body();
+        BodyFixture pigFixture = new BodyFixture(new Circle(0.3));
+        pigFixture.setRestitution(0.3);
+        pigFixture.setFriction(1);
+        pig.addFixture(pigFixture);
+        pig.getTransform().setTranslation(new Vector2(x,y));
+        pig.setMass(MassType.NORMAL);
+        world.addBody(pig);
+        gameObjects.add(new GameObject("/images/pig.png", pig, new Vector2(0,-30), 0.15));
+    }
+
+    private void catapult(MouseEvent e) {
+        mouseX = e.getX()/100-9.6;
+        mouseY = (e.getY()/100-5.4)*-1;
+        if (!e.isDragDetect()) {
+            angryBlackBird.setMass(MassType.NORMAL);
+            Vector2 vector = new Vector2((mouseX - oldMouseX)*-100, (mouseY - oldMouseY)*-100);
+            angryBlackBird.applyForce(vector);
+        }
+
+    }
+
+
+    private void clickHandler (MouseEvent e) {
+
+        if (e.isControlDown() && e.isShiftDown())
+            addPig((e.getX()/100-9.6), (e.getY()/100-5.4)*-1);
+        else if (e.isControlDown())
+            addBlock((e.getX()/100-9.6), (e.getY()/100-5.4)*-1);
+        else {
+            oldMouseX = e.getX()/100-9.6;
+            oldMouseY = (e.getY()/100-5.4)*-1;
+        }
+
+    }
+
+
+
+
+    public void update(double deltaTime) {
+//        mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), 100);
+
+        canvas.setOnMousePressed(e -> clickHandler(e));
+        canvas.setOnMouseReleased(e -> catapult(e));
+
         world.update(deltaTime);
 
     }
+
 
     public static void main(String[] args) {
         launch(AngryBirds.class);
