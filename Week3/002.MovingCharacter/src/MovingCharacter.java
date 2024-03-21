@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 
 public class MovingCharacter extends Application {
     private ResizableCanvas canvas;
+    private ResizableCanvas canvas2;
     int i = 32;
     int xImage = 0;
     private int k = 0;
@@ -24,6 +25,8 @@ public class MovingCharacter extends Application {
         HelloImage();
         BorderPane mainPane = new BorderPane();
         canvas = new ResizableCanvas(g -> draw(g), mainPane);
+
+
         mainPane.setCenter(canvas);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         new AnimationTimer() {
@@ -54,9 +57,6 @@ public class MovingCharacter extends Application {
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
         graphics.drawImage(tiles[i], xImage,250, null);
 
-
-
-
     }
 
 
@@ -64,15 +64,20 @@ public class MovingCharacter extends Application {
     {
 
         canvas.setOnMousePressed(e -> clicked = true);
-        canvas.setOnMouseReleased(e -> clicked = false);
         if (!clicked) {
-            if (i >= 40)
+            if (i >= 40) {
                 i = 32;
+            }
         } else {
-            i = 24;
+            if (i < 40)
+                i = 40;
+        }
+        if (i > 48) {
+            i= 32;
+            clicked = false;
         }
             k++;
-        if (k >= 10) {
+        if (k >= 10) { // k = timer for how often it goes to next picture
             i++;
             k = 0;
         }
