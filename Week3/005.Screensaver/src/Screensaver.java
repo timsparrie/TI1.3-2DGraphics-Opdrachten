@@ -22,17 +22,23 @@ public class Screensaver extends Application {
     private Point2D.Double point2;
     private Point2D.Double point3;
     private Point2D.Double point4;
-    private double animationSpeed = 1/5; // lower is faster
+    private double animationSpeed = 1/500; // lower is faster
     private int distance = 3; // distance between lines
-    private int loopAmount = 50; // how many lines get saved
+    private int loopAmount = 250; // how many lines get saved
+    private int r = 58;
+    private int g = 156;
+    private int b = 222;
     private int directionXPoint1 = -distance;
     private int directionYPoint1 = -distance;
     private int directionXPoint2 = distance;
     private int directionYPoint2 = -distance;
     private int directionXPoint3 = -distance;
     private int directionYPoint3 = distance;
-    private int directionXPoint4 = -distance;
-    private int directionYPoint4 = -distance;
+    private int directionXPoint4 = distance;
+    private int directionYPoint4 = distance;
+    private boolean stateB = true;
+    private boolean stateG = true;
+    private boolean stateR = true;
 
     @Override
     public void start(Stage stage) throws Exception
@@ -41,7 +47,7 @@ public class Screensaver extends Application {
         BorderPane mainPane = new BorderPane();
         canvas = new ResizableCanvas(g -> draw(g), mainPane);
         mainPane.setCenter(canvas);
-        canvas.resize(800,600);
+        canvas.resize(2000,1000);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         new AnimationTimer() {
             long last = -1;
@@ -69,9 +75,9 @@ public class Screensaver extends Application {
         graphics.setTransform(new AffineTransform());
         graphics.setBackground(Color.BLACK);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
-        graphics.setColor(new Color(65,253,254));
 
         for (int i = 0; i < points1.size()-1; i++) {
+            graphics.setColor(new Color(r, g, b));
             graphics.drawLine((int) points1.get(i).getX(), (int) points1.get(i).getY(), (int) points2.get(i).getX(), (int) points2.get(i).getY());
             graphics.drawLine((int) points2.get(i).getX(), (int) points2.get(i).getY(), (int) points3.get(i).getX(), (int) points3.get(i).getY());
             graphics.drawLine((int) points3.get(i).getX(), (int) points3.get(i).getY(), (int) points4.get(i).getX(), (int) points4.get(i).getY());
@@ -86,13 +92,13 @@ public class Screensaver extends Application {
         point1 = new Point2D.Double( 150,100);
         points1.add(point1);
 
-        point2 = new Point2D.Double( 100 + Math.random() * 300,300 + Math.random() * 100);
+        point2 = new Point2D.Double( 500 + Math.random() * 800,300 + Math.random() * 600);
         points2.add(point2);
 
-        point3 = new Point2D.Double( 100 + Math.random() * 200,100 + Math.random() * 200);
+        point3 = new Point2D.Double( 400 + Math.random() * 1500,100 + Math.random() * 600);
         points3.add(point3);
 
-        point4 = new Point2D.Double( 0 + Math.random() * 100,0 + Math.random() * 100);
+        point4 = new Point2D.Double( 0 + Math.random() * 419,0 + Math.random() * 300);
         points4.add(point4);
 
     }
@@ -135,7 +141,39 @@ public class Screensaver extends Application {
 
 
 
+            if (r  + 1> 255 && stateR) {
+                stateR = !stateR;
+            }
+            if (r -1 < 0 && !stateR) {
+                stateR = !stateR;
 
+            }
+            if (g + 1> 255 && stateG) {
+                stateG = !stateG;
+            }
+            if(g - 1 < 0 && !stateG) {
+                stateG = !stateG;
+
+            }
+            if (b + 1 > 255 && stateB) {
+                stateB = !stateB;
+            }
+            if (b - 1 < 0 && !stateB) {
+                stateB = !stateB;
+            }
+
+            if (stateR)
+                r++;
+            else
+                r--;
+            if (stateG)
+                g++;
+            else
+                g--;
+            if (stateB)
+                b++;
+            else
+                b--;
         }
 
     }
