@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class Screensaver extends Application {
     private ResizableCanvas canvas;
     private double timer;
-    private double animationSpeed = 1/30;
     private ArrayList<Point2D> points1 = new ArrayList<>();
     private ArrayList<Point2D> points2 = new ArrayList<>();
     private ArrayList<Point2D> points3 = new ArrayList<>();
@@ -23,7 +22,9 @@ public class Screensaver extends Application {
     private Point2D.Double point2;
     private Point2D.Double point3;
     private Point2D.Double point4;
-    private int distance = 3;
+    private double animationSpeed = 1/5; // lower is faster
+    private int distance = 3; // distance between lines
+    private int loopAmount = 50; // how many lines get saved
     private int directionXPoint1 = -distance;
     private int directionYPoint1 = -distance;
     private int directionXPoint2 = distance;
@@ -32,7 +33,6 @@ public class Screensaver extends Application {
     private int directionYPoint3 = distance;
     private int directionXPoint4 = -distance;
     private int directionYPoint4 = -distance;
-    private int loopAmount = 50;
 
     @Override
     public void start(Stage stage) throws Exception
@@ -41,7 +41,7 @@ public class Screensaver extends Application {
         BorderPane mainPane = new BorderPane();
         canvas = new ResizableCanvas(g -> draw(g), mainPane);
         mainPane.setCenter(canvas);
-        canvas.resize(500,500);
+        canvas.resize(800,600);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         new AnimationTimer() {
             long last = -1;
@@ -67,9 +67,9 @@ public class Screensaver extends Application {
     public void draw(FXGraphics2D graphics)
     {
         graphics.setTransform(new AffineTransform());
-        graphics.setBackground(Color.white);
+        graphics.setBackground(Color.BLACK);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
-        graphics.setColor(Color.PINK);
+        graphics.setColor(new Color(65,253,254));
 
         for (int i = 0; i < points1.size()-1; i++) {
             graphics.drawLine((int) points1.get(i).getX(), (int) points1.get(i).getY(), (int) points2.get(i).getX(), (int) points2.get(i).getY());
