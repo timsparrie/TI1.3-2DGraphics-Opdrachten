@@ -1,22 +1,20 @@
 import org.jfree.fx.FXGraphics2D;
 
-import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
 
-public class DistanceConstraint implements Constraint, Serializable {
+public class RopeConstraint implements Constraint, Serializable {
 
     private double distance;
     private Particle a;
     private Particle b;
-    private double adjustmentDistance;
 
-    public DistanceConstraint(Particle a, Particle b) {
+    public RopeConstraint(Particle a, Particle b) {
         this(a, b, a.getPosition().distance(b.getPosition()));
     }
 
-    public DistanceConstraint(Particle a, Particle b, double distance) {
+    public RopeConstraint(Particle a, Particle b, double distance) {
         this.a = a;
         this.b = b;
         this.distance = distance;
@@ -26,7 +24,9 @@ public class DistanceConstraint implements Constraint, Serializable {
     public void satisfy() {
 
         double currentDistance = a.getPosition().distance(b.getPosition());
-        adjustmentDistance = (currentDistance - distance) / 2;
+        double adjustmentDistance = (currentDistance - distance) / 2;
+        if (currentDistance < distance)
+            return;
 
         Point2D BA = new Point2D.Double(b.getPosition().getX() - a.getPosition().getX(), b.getPosition().getY() - a.getPosition().getY());
         double length = BA.distance(0, 0);
@@ -45,10 +45,6 @@ public class DistanceConstraint implements Constraint, Serializable {
 
     @Override
     public void draw(FXGraphics2D g2d) {
-        float color = 0.4f+(float) adjustmentDistance/250;
-        if (color > 1)
-            color = 1;
-        g2d.setColor(Color.getHSBColor(1, color, 1));
         g2d.draw(new Line2D.Double(a.getPosition(), b.getPosition()));
     }
 }

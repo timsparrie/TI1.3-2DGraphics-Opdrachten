@@ -62,8 +62,8 @@ public class BlockDrag extends Application {
 
     }
     public void init() {
-        renderables.add(new Renderable(new Rectangle2D.Double(-50,-50,100,100), new Point2D(134,343),0, 1));
-        renderables.add(new Renderable(new Rectangle2D.Double(-50,-50,100,100), new Point2D(188,122),0, 1));
+        renderables.add(new Renderable(new Rectangle2D.Double(-50,-50,100,100), new Point2D(134,343)));
+        renderables.add(new Renderable(new Rectangle2D.Double(-50,-50,100,100), new Point2D(188,122)));
     }
     public void update (double deltatime) {
 
